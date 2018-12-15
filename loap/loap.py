@@ -38,4 +38,4 @@ def init_logging(opts):
         stream=sys.stdout,
         format='%(asctime)s %(levelname) 5s %(name)s | %(message)s',
         datefmt='%Y-%m-%dT%H:%M:%S%z',
-        loglevel=opts.loglevel)
+        level=opts.loglevel)
