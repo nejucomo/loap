@@ -6,7 +6,7 @@ import distutils.command.upload
 
 
 PACKAGE = 'loap'
-VERSION = '0.2'
+VERSION = '0.2.1'
 CODE_SIGNING_GPG_ID = '83C58714F20D8D34F46ECA64102464A385AF6563'
 
 
