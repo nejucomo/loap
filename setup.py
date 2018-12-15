@@ -108,8 +108,7 @@ class ReleaseCommand (setuptools.Command):
             'python', './setup.py', 'sdist', 'bdist_wheel',
         )
         sdist = 'dist/{}-{}.tar.gz'.format(PACKAGE, version)
-        bdist = 'dist/{}-{}.tar.gz'.format(PACKAGE, version)
-        raise SystemExit(repr(bdist))
+        bdist = 'dist/{}-{}-py2-none-any.whl'.format(PACKAGE, version)
         shdry(
             'gpg', '--detach-sign', '-a', sdist, bdist,
         )
