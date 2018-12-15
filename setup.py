@@ -1,14 +1,13 @@
 #! /usr/bin/env python
 
-import os
 import subprocess
 import setuptools
 import distutils.command.upload
 
 
 PACKAGE = 'loap'
-VERSION = '0.1'
-CODE_SIGNING_GPG_ID = '29F306D804101C610BDEA41F5F53C65730693904'
+VERSION = '0.2'
+CODE_SIGNING_GPG_ID = '83C58714F20D8D34F46ECA64102464A385AF6563'
 
 
 def setup():
@@ -48,8 +47,6 @@ class ReleaseCommand (setuptools.Command):
     user_options = [
         ('dry-run', None, 'Do not git tag or upload.')
     ]
-
-    _SAFETY_ENV = '_SETUP_RELEASE_ALLOW_UPLOAD_'
 
     def initialize_options(self):
         """init options"""
@@ -107,11 +104,17 @@ class ReleaseCommand (setuptools.Command):
 
         shdry('git', 'push', '--follow-tags', 'origin', branch)
 
-        os.environ[ReleaseCommand._SAFETY_ENV] = 'yes'
-
         shdry(
-            'python', './setup.py', 'sdist', 'upload',
-            '--sign', '--identity', CODE_SIGNING_GPG_ID,
+            'python', './setup.py', 'sdist', 'bdist_wheel',
+        )
+        sdist = 'dist/{}-{}.tar.gz'.format(PACKAGE, version)
+        bdist = 'dist/{}-{}.tar.gz'.format(PACKAGE, version)
+        raise SystemExit(repr(bdist))
+        shdry(
+            'gpg', '--detach-sign', '-a', sdist, bdist,
+        )
+        shdry(
+            'twine', 'upload', sdist, sdist + '.asc', bdist, bdist + '.asc',
         )
 
 
@@ -119,12 +122,9 @@ class UploadCommand (distutils.command.upload.upload):
     description = distutils.command.upload.upload.__doc__
 
     def run(self):
-        if os.environ.get(ReleaseCommand._SAFETY_ENV) != 'yes':
-            raise SystemExit(
-                'Please use the release command, ' +
-                'rather than directly uploading.')
-        else:
-            return distutils.command.upload.upload.run(self)
+        raise SystemExit(
+            'Please use the release command, ' +
+            'rather than directly uploading.')
 
 
 if __name__ == '__main__':
