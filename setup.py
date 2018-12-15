@@ -6,7 +6,7 @@ import distutils.command.upload
 
 
 PACKAGE = 'loap'
-VERSION = '0.2.1'
+VERSION = '0.2.2'
 CODE_SIGNING_GPG_ID = '83C58714F20D8D34F46ECA64102464A385AF6563'
 
 
@@ -110,7 +110,10 @@ class ReleaseCommand (setuptools.Command):
         sdist = 'dist/{}-{}.tar.gz'.format(PACKAGE, version)
         bdist = 'dist/{}-{}-py2-none-any.whl'.format(PACKAGE, version)
         shdry(
-            'gpg', '--detach-sign', '-a', sdist, bdist,
+            'gpg', '--detach-sign', '-a', sdist,
+        )
+        shdry(
+            'gpg', '--detach-sign', '-a', bdist,
         )
         shdry(
             'twine', 'upload', sdist, sdist + '.asc', bdist, bdist + '.asc',
